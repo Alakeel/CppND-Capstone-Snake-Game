@@ -1,22 +1,36 @@
-#include <iostream>
 #include "controller.h"
 #include "game.h"
+#include "helper.h"
+#include "memory"
 #include "renderer.h"
+#include <iostream>
 
-int main() {
-  constexpr std::size_t kFramesPerSecond{60};
-  constexpr std::size_t kMsPerFrame{1000 / kFramesPerSecond};
-  constexpr std::size_t kScreenWidth{640};
-  constexpr std::size_t kScreenHeight{640};
-  constexpr std::size_t kGridWidth{32};
-  constexpr std::size_t kGridHeight{32};
+using namespace GuiSettings; // from Helper class
 
-  Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
-  Controller controller;
-  Game game(kGridWidth, kGridHeight);
-  game.Run(controller, renderer, kMsPerFrame);
-  std::cout << "Game has terminated successfully!\n";
-  std::cout << "Score: " << game.GetScore() << "\n";
-  std::cout << "Size: " << game.GetSize() << "\n";
+int main()
+{
+  bool restartFlag{true};
+  while (restartFlag)
+  {
+    bool running{true};
+    // Put game instance inside a scope. Fix for Alt-F4
+    while (running)
+    {
+      // Setup game, controller and renderer
+      std::unique_ptr<Game> gameInstance = std::make_unique<Game>(kGridWidth, kGridHeight);
+      auto renderer = std::make_unique<Renderer>(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
+      auto contoller = std::make_unique<Controller>();
+      // Start Game
+      running = gameInstance->Run(contoller, renderer, kMsPerFrame);
+      // Game Ended - Display Results
+      std::cout << "============================================\n";
+      std::cout << "*                Results                   *\n";
+      std::cout << "Score: " << gameInstance->GetScore() << "\n";
+      std::cout << "Size: " << gameInstance->GetSize() << "\n";
+      std::cout << "============================================\n";
+    }
+    // Prompt To Restart
+    restartFlag = Helper::Prompt("Restart The Game ? (y/n)", 'y') ? true : false;
+  }
   return 0;
 }

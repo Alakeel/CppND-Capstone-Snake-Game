@@ -1,15 +1,17 @@
 #include "controller.h"
+
 #include <iostream>
 #include "SDL.h"
 #include "snake.h"
+#include "memory"
 
-void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
+void Controller::ChangeDirection(std::shared_ptr<Snake> &snake, Snake::Direction input,
                                  Snake::Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1) snake.direction = input;
+  if (snake->direction != opposite || snake->Size() == 1) snake->direction = input;
   return;
 }
 
-void Controller::HandleInput(bool &running, Snake &snake) const {
+void Controller::HandleInput(bool &running, std::shared_ptr<Snake> &snake) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -34,6 +36,13 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
         case SDLK_RIGHT:
           ChangeDirection(snake, Snake::Direction::kRight,
                           Snake::Direction::kLeft);
+          break;
+
+        case SDLK_ESCAPE: // pause game on escape
+          SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                         "Game Paused",
+                         "You've paused the game. Click OK to resume.",
+                         NULL);
           break;
       }
     }

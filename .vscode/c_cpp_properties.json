@@ -5,12 +5,21 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/local/include/**",
-                "/usr/include/**"
+                "/usr/include/SDL2/**"
             ],
+            "browse": {
+              "path": [
+                  "${workspaceRoot}/**",
+                "/usr/local/include/**",
+                "/usr/include/SDL2/**"
+              ],
+              "limitSymbolsToIncludedHeaders": true,
+              "databaseFilename": ""
+          },
             "defines": [],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
-            "cppStandard": "c++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
         }
     ],
